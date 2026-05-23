@@ -1,19 +1,21 @@
-# UNIPDroidians
+# UNIPDroidians - Módulo de Navegação (UD-H1 Navigation Stack)
 **Website:** [unipdroidians.com](http://unipdroidians.com)
 
 ## 🔧 Sobre o projeto  
-UNIPDroidians é o grupo de robótica da UNIP empenhado em desenvolver soluções para robôs domésticos e participar da RoboCup At Home. Este repositório reúne código-fonte, tutoriais e documentação para:
+UNIPDroidians é o grupo de robótica da UNIP empenhado em desenvolver soluções para robôs domésticos e participar da RoboCup At Home. Este repositório reúne o código-fonte, configurações de navegação, simulação e drivers de controle de movimentação da base diferencial do robô **UD-H1**:
 
-- Instalação e configuração do sistema (ex: Ubuntu 22.04 + ROS 2 Humble)  
-- Controle de robô, percepção por câmera/LIDAR, manipulação com braços 6-DOF  
-- Integração de QA offline, visão computacional, SLAM, e automação de tarefas domésticas  
+- Integração com ROS 2 Humble e o framework **Nav2** (Navigation 2).
+- Localização AMCL (Adaptive Monte Carlo Localization) e mapeamento SLAM via **SLAM Toolbox**.
+- Driver Python de ponte serial (`serial_com_py`) e nó de monitoramento de segurança (`distance_watchdog`).
+- Firmwares de baixo nível do Arduino (`Arduino/`) com controle em malha fechada PI + Feedforward a 50Hz e interrupções externas nativas.
+- Modelo cinemático/visual em URDF/Xacro (`udh1_description`) e simulação física no Gazebo Classic (`udh1_gazebo`).
 
 ## 📁 Conteúdo do repositório
-- `/src` — Código-fonte dos nós ROS, drivers, wrappers e pacotes (como `droidians_vision`)  
-- `/launch` — Arquivos de lançamento para SLAM, manipulação, visão etc.  
-- `/docs` — Documentação, tutoriais, guias de instalação e uso  
-- `/sim` — Mundos e arquivos de simulação (Gazebo, RViz)  
-- `/README.md` — Arquivo de apresentação principal em inglês  
+- `/src` — Código-fonte dos pacotes do ROS 2 Humble (drivers, simulação, bringups, mapas e configurações do Nav2)
+- `/Arduino` — Códigos do firmware e bibliotecas do Arduino para controle de motores e leitura de encoders
+- `/mapas` — Arquivos de mapa de ocupação 2D (.yaml e .pgm) e configurações do RViz2
+- `/docs` — Manuais de instalação, guias de setup da navegação, análises técnicas e relatórios
+- `/.planning` — Metadados de planejamento das fases do projeto via GSD workflow
 
 ## 🤝 Contribuição  
 Contribuidores são bem-vindos! Para contribuir:  
