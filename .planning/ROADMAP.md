@@ -11,8 +11,8 @@ O roadmap deste módulo foi estruturado para desenvolver a pilha de navegação 
 - Decimal phases (e.g., 3.1): Urgent insertions (marked with INSERTED)
 
 - [x] **Phase 1: Driver de Base e Odometria** - Implementação da comunicação serial, comandos de movimentação e integração inicial de odometria (/odom e transformações).
-- [x] **Phase 2: Mapeamento e Sensorização** - Driver do LIDAR RPLidar C1 integrado ao ROS 2 e geração do primeiro mapa estático via SLAM Toolbox.
-- [/] **Phase 3: Calibração de Odometria e Filtros** - Resolução de inversões no RViz, calibração fina de translação/rotação e sintonia inicial do localizador AMCL.
+- [/] **Phase 2: Mapeamento e Sensorização** - Driver do LIDAR RPLidar C1 integrado ao ROS 2 e geração do primeiro mapa estático via SLAM Toolbox.
+- [ ] **Phase 3: Calibração de Odometria e Filtros** - Resolução de inversões no RViz, calibração fina de translação/rotação e sintonia inicial do localizador AMCL.
 - [ ] **Phase 4: Configuração e Sintonia do Nav2** - Ajuste fino de costmaps local/global, planners de trajetória (TEB/DWB) e desvio de obstáculos dinâmicos em simulação e hardware real.
 - [ ] **Phase 5: Automação de Waypoints (Metas Sequenciais)** - Criação de nó ROS 2 para controle sequencial de waypoints e envio de metas de navegação para competições.
 
@@ -34,7 +34,7 @@ O roadmap deste módulo foi estruturado para desenvolver a pilha de navegação 
 **Success Criteria**:
   1. O nó `sllidar_node` publica leituras de laser de alta densidade no tópico `/scan`.
   2. É gerado um mapa estático (`mapa_udh1.yaml` / `.pgm`) em ambiente de teste usando SLAM Toolbox.
-**Plans**: 2 plans (Completed)
+**Plans**: 2 plans
 
 ### Phase 3: Calibração de Odometria e Filtros
 **Goal**: Resolver desvios sistemáticos de odometria e calibrar filtros de laser e AMCL.
@@ -73,7 +73,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Driver de Base e Odometria | 2/2 | Completed | 2026-05-22 |
-| 2. Mapeamento e Sensorização | 2/2 | Completed | 2026-05-22 |
-| 3. Calibração de Odometria e Filtros | 0/2 | Active | |
+| 2. Mapeamento e Sensorização | 0/2 | Active | |
+| 3. Calibração de Odometria e Filtros | 0/2 | Pending | |
 | 4. Configuração e Sintonia do Nav2 | 0/2 | Pending | |
 | 5. Automação de Waypoints (Metas Sequenciais) | 0/2 | Pending | |
