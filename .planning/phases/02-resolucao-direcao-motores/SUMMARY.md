@@ -22,6 +22,12 @@ Este documento resume as modificações efetuadas e validadas para corrigir o co
 
 ---
 
+## Alinhamento de Escopo e Prioridades
+*   **Foco Principal da Fase**: Resolver a derrapada (*skidding*) e calibrar o robô para andar reto fisicamente.
+*   **Tarefas Postergadas (Pós-dia 13)**: Investigação sobre a quebra do mapa no Nav2 em modo autônomo e teletransporte na simulação do Gazebo.
+
+---
+
 ## Próximos Passos de Verificação Prática
 *   Realizar o teste estático com as rodas suspensas para confirmar que os sentidos e rotações estão sintonizados.
 *   Executar o teste dinâmico no chão em linha reta por 1 metro.

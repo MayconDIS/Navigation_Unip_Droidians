@@ -61,9 +61,9 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-- Testar o novo controle em malha fechada do Arduino.
-- Calibrar o fator de escala de rotação e translação no driver de odometria (`base_driver_pulse.py`).
-- Sintonizar parâmetros dinâmicos do AMCL.
+- Realizar o teste estático com as rodas suspensas para validar o sentido dos motores.
+- Executar o teste dinâmico de pista de 1 metro com teleoperação WASD para validar a linearidade física e ausência de derrapagem (skidding).
+- Calibrar o fator de escala de rotação e translação no driver de odometria (`base_driver_pulse.py`) com base nos desvios reais.
 
 ### Blockers/Concerns
 
@@ -76,6 +76,7 @@ Items acknowledged and carried forward:
 | Category | Item | Status | Deferred At |
 |----------|------|--------|-------------|
 | Hardware | Integração da câmera Intel RealSense para desvio de obstáculos 3D | Deferred | 2026-05-23 |
+| Navegação / Simulação | Correção de quebra do mapa no Nav2 (modo autônomo) e teletransporte no simulador Gazebo | Deferred (pós-dia 13) | 2026-05-23 |
 
 ## Session Continuity
 

@@ -33,8 +33,9 @@ O roadmap deste módulo foi estruturado para desenvolver a pilha de navegação 
 **Depends on**: Phase 1
 **Requirements**: [DRV-03, DRV-04]
 **Success Criteria**:
-  1. O Arduino executa o controle de velocidade em malha fechada a 50Hz (20ms) usando controlador PI + Feedforward.
-  2. A roda responde dinamicamente a mudanças de carga sem oscilações violentas e sem dependência de TRIM estático.
+  1. O Arduino executa o controle de velocidade em malha fechada a 50Hz (20ms) usando controlador PI + Feedforward, compensando a assimetria física dos motores sem dependência de TRIM estático.
+  2. O robô navega em linha reta via teleoperação WASD com desvio lateral medido inferior a 5 cm por metro (derrapagem resolvida).
+  3. Comportamentos anômalos complexos (como quebra do mapa no Nav2 e teletransporte no simulador Gazebo) são identificados e mapeados para tratamento posterior (pós-dia 13).
 **Plans**: 2 plans
 
 ### Phase 3: Mapeamento e Sensorização

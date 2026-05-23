@@ -15,14 +15,25 @@ A malha de controle no Arduino rodava a cada **100ms**. Em motores de hoverboard
 A fórmula do controle de velocidade era calculada acumulando o erro direto no PWM (`pwm += erro * kp`). Matematicamente, isso se comporta apenas como um termo **Integral**. Controladores puramente integrais têm resposta lenta para iniciar o movimento (rampa lenta) e sofrem de *overshoot* (passam do valor alvo e ficam oscilando em "S").
 
 ### C. Conflito entre Malha Fechada e TRIM Estático
-Havia uma redução estática de potência configurada no motor direito (`TRIM_DIR = -0.07`). Como o robô está em malha fechada, se o TRIM força a roda a girar mais devagar, o controlador lê a velocidade menor e aumenta o PWM para compensar. Isso gerava uma disputa constante entre a atenuação do TRIM e a correção da malha fechada, causando instabilidade.
+A equipe havia adicionado um TRIM estático (`TRIM_DIR = -0.07`) para tentar corrigir a diferença física de velocidade entre os motores: sem o TRIM, um motor girava a **192 RPM** e o outro a **216 RPM** sob o mesmo comando. Como o robô está em malha fechada, se o TRIM força a roda a girar mais devagar, o controlador lê a velocidade menor e aumenta o PWM para compensar. Isso gerava uma disputa constante entre a atenuação do TRIM (que não estava bem ajustado) e a correção da malha fechada, causando instabilidade.
 
-### D. Negação Global de Sinais no ROS 2
-Havia uma negação de eixos na odometria (`v_linear = -((v_dir + v_esq)/2.0)`). Isso fazia com que, ao comandar o robô para frente no teclado, ele andasse fisicamente para frente, mas o ROS reportasse que ele estava indo para trás no RViz. Essa contradição de sinais quebrava a consistência matemática do AMCL e do Nav2, forçando o robô a tentar corrigir curvas inexistentes.
+### D. Comportamento Anômalo de Sinais no ROS 2 (Nav2 & Gazebo)
+Havia uma negação de eixos na odometria (`v_linear = -((v_dir + v_esq)/2.0)`). A equipe observou que:
+*   Durante a **teleoperação manual**, o sentido de movimentação do robô no RViz2 estava correto.
+*   Contudo, o problema ocorria ao ativar a navegação autônoma pelo **Nav2**: o mapa quebrava e o RViz2 ficava completamente instável ("bugado") ao tentar alcançar o ponto marcado.
+*   No ambiente simulado do **Gazebo**, o robô exibia um comportamento de "teletransporte".
 
 ---
 
-## 2. Alterações Propostas e Implementadas
+## 2. Escopo e Priorização (Alinhamento da Equipe)
+
+Conforme acordado com a equipe, as prioridades foram divididas da seguinte forma:
+*   **Foco Imediato (Fase 2 - Atual)**: Resolver a derrapada (*skidding*) do robô e garantir que ele ande em linha reta de forma consistente no ambiente real por meio do novo controle PI + Feedforward e das interrupções nativas de hardware do Arduino.
+*   **Postergado (Pós-dia 13)**: A resolução detalhada dos problemas de navegação autônoma no Nav2 (quebra do mapa no RViz2) e o comportamento de teletransporte no simulador Gazebo.
+
+---
+
+## 3. Alterações Propostas e Implementadas
 
 As seguintes melhorias foram aplicadas no repositório local:
 
@@ -45,7 +56,24 @@ Criamos o nó `wasd_teleop` para substituir o teclado padrão do ROS. A equipe a
 
 ---
 
-## 3. Roteiro de Teste Proposto para a Equipe
+## 4. Por que usar os Parâmetros de Controle (Placeholders) em vez de TRIM Estático?
+
+Substituímos o uso do TRIM estático (`TRIM_DIR = -0.07`) na saída do motor pelas variáveis e constantes de controle dinâmico (representadas originalmente pelos placeholders de código no documento, como `FeedForward`, `kp` e `ki`). Essa decisão baseia-se em princípios fundamentais de controle:
+
+1. **Compensação Dinâmica vs. Estática**:
+   * O **TRIM estático** aplica uma atenuação de potência fixa e cega. Ele não se adapta a variações de voltagem da bateria, rugosidade do solo, inclinação do terreno ou desgaste mecânico dos motores ao longo do tempo.
+   * Os **Parâmetros de Malha Fechada (`kp`, `ki` e `FeedForward`)** recalculam continuamente a tensão necessária a cada ciclo de 20ms baseando-se no erro real de velocidade (diferença entre o alvo e o lido pelo encoder).
+
+2. **Prevenção do Conflito de Controle ("Cabo de Guerra")**:
+   * Quando o TRIM estático reduz a potência de uma roda, o robô gira mais devagar daquele lado. O controlador PI lê essa velocidade abaixo do setpoint, identifica isso como um erro e aumenta a potência para compensar.
+   * Isso gera uma disputa cíclica na qual o TRIM tenta atenuar e a malha fechada tenta acelerar, causando oscilações bruscas (movimento em "S") e derrapagens.
+
+3. **Partida Simétrica Ajustada por Feedforward**:
+   * Para corrigir a assimetria na partida física (quando um motor vence a inércia mais rápido que o outro, como a variação de 192 RPM vs 216 RPM relatada), o correto é calibrar as constantes de ganho preditivo de partida individualmente para cada motor (`feedForwardEsq` e `feedForwardDir`). Isso atua de maneira limpa antes da ação de correção do PI, ao invés de limitar o PWM final.
+
+---
+
+## 5. Roteiro de Teste Proposto para a Equipe
 
 Para validar as alterações fisicamente, a equipe deve seguir estes 3 passos simples no laboratório:
 

@@ -24,7 +24,7 @@ Este walkthrough documenta as alterações realizadas para resolver o problema f
 
 ## Verification Plan & Steps for the Team
 
-Como o robô necessita de validação física no laboratório, a equipe deve seguir estes passos de teste:
+Como o robô necessita de validação física no laboratório, a equipe deve seguir estes passos de teste (com foco principal em teleoperação e retilineidade física antes do dia 13):
 
 1.  **Validação com Rodas Suspensas (Estático)**:
     *   Suspender o robô para evitar contato com o chão.
@@ -34,8 +34,10 @@ Como o robô necessita de validação física no laboratório, a equipe deve seg
         ```
     *   Pressionar **W** e verificar se as duas rodas giram na mesma velocidade para a frente.
 2.  **Validação de Coordenadas de Odometria**:
-    *   Comandar o robô para frente: verificar se a pose X no tópico `/odom` aumenta positivamente.
+    *   Comandar o robô para frente: verificar se a pose X no tópico `/odom` aumenta positivamente (correto no RViz2, conforme observado pela equipe).
     *   Comandar rotação para a esquerda: verificar se a pose angular yaw (orientação Z) aumenta positivamente (regra da mão direita).
-3.  **Teste de Direção Retilínea no Piso**:
+3.  **Teste de Direção Retilínea no Piso (Foco Prioritário)**:
     *   Colocar o robô em uma marcação retilínea no chão e enviar comando linear constante.
     *   Verificar se o desvio lateral na distância de 1 metro é inferior a **5 cm**.
+
+*Nota: Testes de navegação autônoma pelo Nav2 (onde ocorria a instabilidade no mapa) e comportamento de simulação no Gazebo (teletransporte) foram postergados para a próxima fase (pós-dia 13).*
