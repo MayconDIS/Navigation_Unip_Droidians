@@ -16,6 +16,10 @@ Este documento resume as modificações efetuadas e validadas para corrigir o co
 *   **Rampas de Aceleração**: Implementado limites de aceleração linear ($0.8\text{ m/s}^2$) e angular ($1.5\text{ rad/s}^2$) no callback de comando. Isso suaviza partidas e paradas rápidas enviadas pelo Nav2, evitando que as rodas de hoverboard patinem ou percam tração.
 *   **Remoção de Negações**: Removida a negação global de odometria linear/angular que gerava inconsistência matemática no filtro de localização e costmaps.
 
+### 3. Criação de Utilidade de Controle WASD Customizada
+*   **Arquivos**: [wasd_teleop.py](file:///c:/Users/mayco/Documents/GitHub/Navigation_Unip_Droidians/src/serial_com_py/serial_com_py/wasd_teleop.py) e declaração de console script em [setup.py](file:///c:/Users/mayco/Documents/GitHub/Navigation_Unip_Droidians/src/serial_com_py/setup.py).
+*   **Função**: Permite teleoperar o robô pelas teclas W (frente), A (esquerda), S (trás) e D (direita) com velocidade e ângulo calibrados para testes dinâmicos de 1 metro.
+
 ---
 
 ## Próximos Passos de Verificação Prática

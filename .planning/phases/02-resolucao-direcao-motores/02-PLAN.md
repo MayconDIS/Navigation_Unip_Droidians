@@ -18,8 +18,9 @@ Este plano descreve as modificações necessárias no firmware do Arduino e no d
 *   Implementar a lógica PI e limitar o acúmulo de erro (anti-windup).
 *   Zerar integradores em caso de setpoint de parada (evita acúmulo ao parar).
 
-### 2. ROS 2 (`serial_com_py/base_driver_pulse.py`)
-*   Calibração de odometria e verificação dos eixos.
+### 2. ROS 2 (`serial_com_py/`)
+*   Calibração de odometria e verificação dos eixos em [base_driver_pulse.py](file:///c:/Users/mayco/Documents/GitHub/Navigation_Unip_Droidians/src/serial_com_py/serial_com_py/base_driver_pulse.py).
+*   Criação de nó de teleoperação WASD customizado [wasd_teleop.py](file:///c:/Users/mayco/Documents/GitHub/Navigation_Unip_Droidians/src/serial_com_py/serial_com_py/wasd_teleop.py) para controle do robô pelo terminal.
 
 ---
 
