@@ -20,4 +20,4 @@ Este documento resume as modificações efetuadas e validadas para corrigir o co
 
 ## Próximos Passos de Verificação Prática
 *   Realizar o teste estático com as rodas suspensas para confirmar que os sentidos e rotações estão sintonizados.
-*   Executar o teste dinâmico no chão em linha reta por 2 metros.
+*   Executar o teste dinâmico no chão em linha reta por 1 metro.

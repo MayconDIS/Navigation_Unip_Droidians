@@ -27,4 +27,4 @@ Este plano descreve as modificações necessárias no firmware do Arduino e no d
 
 ### Testes Estáticos e de Pista
 *   **Rodas Suspensas**: Validar se as rodas respondem na mesma velocidade ao comando `cmd_vel`.
-*   **Deslocamento Linear**: Medir o desvio físico ao andar 2 metros em linha reta. O limite máximo aceitável de desvio lateral é de 5 cm.
+*   **Deslocamento Linear**: Medir o desvio físico ao andar 1 metro em linha reta. O limite máximo aceitável de desvio lateral é de 5 cm.
