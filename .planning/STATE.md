@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: active
-stopped_at: Iniciando mapeamento e sensorização na Fase 2.
-last_updated: "2026-05-23T14:35:00.000Z"
-last_activity: 2026-05-23 -- Transição do planejamento do projeto de visão para navegação.
+stopped_at: Iniciando resolução do problema de controle de direção e malha de controle na Fase 2.
+last_updated: "2026-05-23T14:54:00.000Z"
+last_activity: 2026-05-23 -- Reestruturação do roadmap para focar no controle de direção antes do mapeamento.
 progress:
-  total_phases: 5
+  total_phases: 6
   completed_phases: 1
-  total_plans: 10
+  total_plans: 12
   completed_plans: 2
-  percent: 20
+  percent: 16
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-23)
 
 **Core value:** Navegação autônoma segura, robusta e precisa do robô de serviço doméstico UD-H1 em cenários de competição.
-**Current focus:** Fase 2: Mapeamento e Sensorização
+**Current focus:** Fase 2: Resolução do Problema de Direção e Controle de Motores
 
 ## Current Position
 
-Phase: 2 (Mapeamento e Sensorização) — ACTIVE
+Phase: 2 (Resolução do Problema de Direção e Controle de Motores) — ACTIVE
 Plan: 0 of 2 in current phase
 Status: Active
-Last activity: 2026-05-23 -- Transição do planejamento para o módulo de Navegação concluído.
+Last activity: 2026-05-23 -- Novo plano de controle de motores e calibração de direção criado.
 
-Progress: [██░░░░░░░░] 20%
+Progress: [█░░░░░░░░░░░] 16%
 
 ## Performance Metrics
 
@@ -44,10 +44,11 @@ Progress: [██░░░░░░░░] 20%
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1. Driver de Base e Odometria | 2/2 | 30 min | 15 min |
-| 2. Mapeamento e Sensorização | 0/2 | 0 min | 0 min |
-| 3. Calibração de Odometria e Filtros | 0/2 | 0 min | 0 min |
-| 4. Configuração e Sintonia do Nav2 | 0/2 | 0 min | 0 min |
-| 5. Automação de Waypoints (Metas Sequenciais) | 0/2 | 0 min | 0 min |
+| 2. Resolução do Problema de Direção | 0/2 | 0 min | 0 min |
+| 3. Mapeamento e Sensorização | 0/2 | 0 min | 0 min |
+| 4. Calibração de Odometria e Filtros | 0/2 | 0 min | 0 min |
+| 5. Configuração e Sintonia do Nav2 | 0/2 | 0 min | 0 min |
+| 6. Automação de Waypoints (Metas Sequenciais) | 0/2 | 0 min | 0 min |
 
 ## Accumulated Context
 
@@ -56,11 +57,11 @@ Progress: [██░░░░░░░░] 20%
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 - [Phase 1]: Uso de Arduino para contagem e controle de velocidade das rodas para evitar sobrecarga no ROS 2.
-- [Phase 2]: Uso do SLAM Toolbox para geração do mapa 2D inicial.
+- [Phase 2]: Aumento da frequência do loop de controle para 50Hz e uso de PI + Feedforward nativo para evitar derrapagens.
 
 ### Pending Todos
 
-- Corrigir a inversão de direção exibida no RViz2.
+- Testar o novo controle em malha fechada do Arduino.
 - Calibrar o fator de escala de rotação e translação no driver de odometria (`base_driver_pulse.py`).
 - Sintonizar parâmetros dinâmicos do AMCL.
 
@@ -78,6 +79,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-05-23 14:35
-Stopped at: Finalizada a reestruturação do planejamento para Navegação. Prontos para iniciar Phase 3.
+Last session: 2026-05-23 14:54
+Stopped at: Finalizada a inclusão da Fase 2 de Direção. Prontos para testar o código do Arduino.
 Resume file: None

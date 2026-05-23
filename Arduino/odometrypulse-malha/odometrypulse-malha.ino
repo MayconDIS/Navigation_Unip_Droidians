@@ -1,4 +1,3 @@
-#include <PinChangeInterrupt.h>
 
 // --- PINOS MOTORES ---
 #define PIN_L_DIR 4
@@ -19,7 +18,7 @@
 const int MAX_PWM = 40; // Aumentado para ter torque (ajuste se ficar muito rápido)         
 const int MIN_PWM = 10;  // Força mínima para vencer a inércia           
 const float TRIM_ESQ = 0.000;
-const float TRIM_DIR = -0.07;
+const float TRIM_DIR = 0.000;
 
 // --- VARIÁVEIS DE ODOMETRIA ---
 volatile long pulsosEsq = 0;
@@ -45,7 +44,11 @@ float pwmDir = 0;
 float pwmEsqOffset = 0;
 float pwmDirOffset = 0;
 
-float kp = 4.0;
+float kp = 80.0;
+float ki = 20.0;
+float feedForward = 100.0;
+float integralEsq = 0.0;
+float integralDir = 0.0;
 
 // --- VARIÁVEIS DE CONTROLE ROS ---
 float target_ros_E = 0;
@@ -62,8 +65,8 @@ void setup() {
   pinMode(ODO_R, INPUT_PULLUP);
   pinMode(ODO_A_L, INPUT_PULLUP);
   pinMode(ODO_A_R, INPUT_PULLUP);
-  attachPinChangeInterrupt(digitalPinToPCINT(ODO_A_L), countEsq, RISING);
-  attachPinChangeInterrupt(digitalPinToPCINT(ODO_A_R), countDir, RISING);
+  attachInterrupt(digitalPinToInterrupt(ODO_A_L), countEsq, RISING);
+  attachInterrupt(digitalPinToInterrupt(ODO_A_R), countDir, RISING);
 }
 
 void loop() {
@@ -100,7 +103,7 @@ void loop() {
   unsigned long tempoAtual = millis();
   unsigned long dt_ms = tempoAtual - tempoAnterior;
   
-  if (dt_ms >= 100) {
+  if (dt_ms >= 20) {
     // Formato: ODO:pulsosEsq;pulsosDir;dt_ms
     Serial.print("ODO:");
     Serial.print(pulsosEsq); Serial.print(";");
@@ -109,64 +112,42 @@ void loop() {
     
     tempoAnterior = tempoAtual;
 
-
-
     // Malha de Controle
-
     varEsq = metros_por_pulso * (pulsosEsq - pulsosEsqAnt);
     varDir = metros_por_pulso * (pulsosDir - pulsosDirAnt);
-
     
-    
-    velEsq = -varEsq/(dt_ms*0.001);
-    velDir = varDir/(dt_ms*0.001);
-
-    Serial.print(velEsq); Serial.print(";");
-    Serial.print(velDir); Serial.println(";");
+    velEsq = -varEsq / (dt_ms * 0.001);
+    velDir = varDir / (dt_ms * 0.001);
 
     pulsosEsqAnt = pulsosEsq;
     pulsosDirAnt = pulsosDir;
-    
-    if (abs(setPointDir) < 0.001) pwmDir = 0;
-    else pwmDir += (setPointDir - velDir) * kp;
 
-    if (abs(setPointEsq) < 0.001) pwmEsq = 0;
-    else pwmEsq += (setPointEsq - velEsq) * kp;
+    // Calcular erros
+    float erroEsq = setPointEsq - velEsq;
+    float erroDir = setPointDir - velDir;
 
-    //pwmDir = constrain(pwmDir, -100, 100);
-    //pwmEsq = constrain(pwmEsq, -100, 100);
-    //if(pwmEsq >= 0){
-    //  pwmEsqOffset = pwmEsq + 5;
-    //}
-    //if(pwmEsq <= 0){
-    //  pwmEsqOffset = pwmEsq - 5;
-    //}
+    // Integral com anti-windup (constrain)
+    integralEsq = constrain(integralEsq + (erroEsq * (dt_ms * 0.001)), -20.0, 20.0);
+    integralDir = constrain(integralDir + (erroDir * (dt_ms * 0.001)), -20.0, 20.0);
 
-    //if(pwmDir >= 0){
-    //  pwmDirOffset = pwmDir + 5;
-    //}
-    //if(pwmDir <= 0){
-    //  pwmDirOffset = pwmDir - 5;
-    //}
-
-    
-    if(pwmDir >= 100){
-      pwmDir = 100;
+    // Zerar integradores quando o robô é solicitado a parar
+    if (abs(setPointEsq) < 0.001) {
+      integralEsq = 0;
+      pwmEsq = 0;
+    } else {
+      float saidaEsq = (setPointEsq * feedForward) + (erroEsq * kp) + (integralEsq * ki);
+      pwmEsq = constrain(saidaEsq, -100, 100);
     }
-    if(pwmDir <= -100){
-      pwmDir = -100;
-    }
-    if(pwmEsq >= 100){
-      pwmEsq = 100;
-    }
-    if(pwmEsq <= -100){
-      pwmEsq = -100;
+
+    if (abs(setPointDir) < 0.001) {
+      integralDir = 0;
+      pwmDir = 0;
+    } else {
+      float saidaDir = (setPointDir * feedForward) + (erroDir * kp) + (integralDir * ki);
+      pwmDir = constrain(saidaDir, -100, 100);
     }
 
     moveMotor(int(pwmDir), int(pwmEsq));
-    //moveMotor(0, -20);
-
-    
   }
 }
 
