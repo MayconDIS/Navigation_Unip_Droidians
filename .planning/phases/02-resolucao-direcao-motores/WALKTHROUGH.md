@@ -1,43 +1,50 @@
-# Walkthrough: Resolução do Problema de Direção e Controle de Motores
+# Walkthrough: Restauração da Base Física e Otimização da Navegação
 
-Este walkthrough documenta as alterações realizadas para resolver o problema físico do robô UD-H1 de desviar de rota ou derrapar.
+Este walkthrough documenta as alterações realizadas para restaurar a base de controle física (Arduino e drivers de baixo nível) a partir do backup `Navigation-main` (devido a restrições e relutância da equipe com as novas mudanças de controle) e aplicar melhorias de navegação estritamente via sintonia de parâmetros do Nav2 e AMCL.
 
 ## Changes Made
 
-### 1. Firmware do Arduino (`Arduino/odometrypulse-malha/`)
-*   **Frequência da Malha Fechada**: Aumentada para **50 Hz** (período de 20ms) para reduzir o tempo de reação de correção das rodas.
-*   **Controlador PI + Feedforward**: Implementada a fórmula completa de PI e Feedforward com proteção contra estouro da parcela integral (anti-windup).
-*   **Interrupções de Hardware**: Alterado o código para usar a função `attachInterrupt` direta de hardware do Arduino Uno/Mega nos pinos 2 e 3 (`INT0` e `INT1`) em vez da biblioteca `PinChangeInterrupt`, eliminando a perda de pulsos em velocidades mais altas.
-*   **Remoção de TRIM**: Desativado o TRIM estático para evitar disputas com a malha fechada.
+### 1. Restauração do Firmware do Arduino
+Para respeitar a decisão da equipe em relação ao controle mecânico do robô, os seguintes firmwares foram restaurados para a versão estável e original da pasta `Navigation-main`:
+*   `Arduino/odometrypulse-malha/odometrypulse-malha.ino` (Retorno ao loop original de 100ms e controle de TRIM antigo)
+*   `Arduino/odometrypulse/odometrypulse.ino`
+*   `Arduino/odometry_new/odometry_new.ino`
 
-### 2. Driver de Odometria ROS 2 (`serial_com_py/`)
-*   **Rampas de Aceleração Suaves**: Adicionadas rampas de limite de aceleração linear ($0.8\text{ m/s}^2$) e angular ($1.5\text{ rad/s}^2$) para suavizar comandos bruscos e evitar derrapagens.
-*   **Remoção de Negações de Eixo**: Removida a negação global redundante das velocidades calculadas no script Python, restaurando a consistência cinemática do TF com o AMCL e os costmaps.
+### 2. Restauração dos Drivers de Baixo Nível (Python)
+Os arquivos de driver e os nós ROS 2 da pasta `serial_com_py` foram reestabelecidos para suas respectivas versões de backup:
+*   `src/serial_com_py/serial_com_py/base_driver.py` (Revertido para o baseline)
+*   `src/serial_com_py/serial_com_py/base_driver_pulse.py` (Revertido para o baseline)
+*   `src/serial_com_py/serial_com_py/base_driver_sim.py` (Nó de simulação restaurado)
+*   `src/serial_com_py/serial_com_py/safe_stop.py` (Nó de segurança ativa restaurado)
 
-### 3. Utilidade de Teleoperação WASD
-*   **WASD Teleop**: Criado o nó [wasd_teleop.py](file:///c:/Users/mayco/Documents/GitHub/Navigation_Unip_Droidians/src/serial_com_py/serial_com_py/wasd_teleop.py) e adicionada sua entrada no [setup.py](file:///c:/Users/mayco/Documents/GitHub/Navigation_Unip_Droidians/src/serial_com_py/setup.py) para permitir controle direcional direto.
+### 3. Registro e Integração no Package Setup
+*   `src/serial_com_py/setup.py`: Adicionados os entry points `safe_stop` e `base_driver_sim` nos console scripts para que o ROS 2 possa localizá-los e executá-los normalmente.
 
-### 4. Reestruturação do Planejamento GSD
-*   Inserção da **Fase 2: Resolução do Problema de Direção e Controle de Motores** como a fase ativa e deslocamento de "Mapeamento e Sensorização" para a **Fase 3**.
+### 4. Ajustes Finos nos Parâmetros do Nav2 e AMCL
+Para melhorar a navegação do robô sem fazer alterações físicas, sintonizamos as configurações de navegação nos seguintes arquivos de parâmetros (`nav2_params_realsense.yaml` e `nav2_params_sim.yaml`), alinhando-os com as correções de `nav2_params.yaml`:
+*   **Correção de Velocidade Lateral**: Ajustado `min_y_velocity_threshold` de `0.5` para `0.001` (essencial para que o Nav2 não trave a navegação de robôs diferenciais).
+*   **Tolerância a Atrasos**: Aumentada a tolerância de transformadas (`transform_tolerance`) no AMCL para `1.5` e no DWB (`FollowPath`) para `1.0`.
+*   **Progress Checker**: Reduzido o raio mínimo de movimento exigido (`required_movement_radius`) para `0.3` e aumentado o tempo limite (`movement_time_allowance`) para `15.0` (evitando abortos inesperados de navegação).
+*   **Segurança e Suavidade**: Desativado o plugin de recuperação agressiva por giro (`spin recovery`) mantendo apenas `backup` e `wait` (reduz risco de colisões em locais estreitos).
+
+### 5. Launch Files Atualizados
+*   `src/my_robot_bringup/launch/udh1_core.launch.py`: Modificado para carregar o executável `base_driver` em vez de `base_driver_pulse`.
+*   `src/my_robot_bringup/launch/udh1_core_maping.launch.py`: Modificado para carregar o executável `base_driver`.
+*   `src/my_robot_bringup/launch/navigation.launch.py`: Modificado para carregar o executável `base_driver` e reinserir o nó de segurança `safe_stop` ativo por padrão.
 
 ---
 
 ## Verification Plan & Steps for the Team
 
-Como o robô necessita de validação física no laboratório, a equipe deve seguir estes passos de teste (com foco principal em teleoperação e retilineidade física antes do dia 13):
+Como o robô necessita de validação física no laboratório com a base original, a equipe deve seguir estes passos de teste:
 
 1.  **Validação com Rodas Suspensas (Estático)**:
     *   Suspender o robô para evitar contato com o chão.
-    *   Iniciar a teleoperação WASD customizada da equipe:
+    *   Iniciar a teleoperação:
         ```bash
         ros2 run serial_com_py wasd_teleop
         ```
-    *   Pressionar **W** e verificar se as duas rodas giram na mesma velocidade para a frente.
-2.  **Validação de Coordenadas de Odometria**:
-    *   Comandar o robô para frente: verificar se a pose X no tópico `/odom` aumenta positivamente (correto no RViz2, conforme observado pela equipe).
-    *   Comandar rotação para a esquerda: verificar se a pose angular yaw (orientação Z) aumenta positivamente (regra da mão direita).
-3.  **Teste de Direção Retilínea no Piso (Foco Prioritário)**:
-    *   Colocar o robô em uma marcação retilínea no chão e enviar comando linear constante.
-    *   Verificar se o desvio lateral na distância de 1 metro é inferior a **5 cm**.
-
-*Nota: Testes de navegação autônoma pelo Nav2 (onde ocorria a instabilidade no mapa) e comportamento de simulação no Gazebo (teletransporte) foram postergados para a próxima fase (pós-dia 13).*
+    *   Verificar se a resposta dos motores atende aos setpoints com o TRIM antigo.
+2.  **Validação de Navegação Autônoma**:
+    *   Garantir que a velocidade lateral do Nav2 está definida como `0.001` nos costmaps e planners correspondentes.
+    *   Executar o Nav2 com poses e verificar a ausência de abortamentos causados pelo SimpleProgressChecker.

@@ -46,8 +46,15 @@ def generate_launch_description():
 
     base_driver_node = Node(
         package='serial_com_py',
-        executable='base_driver_pulse',
+        executable='base_driver',
         name='udh1_base_driver',
+        output='screen'
+    )
+
+    safe_stop_node = Node(
+        package='serial_com_py',
+        executable='safe_stop',
+        name='safe_stop',
         output='screen'
     )
 
@@ -145,6 +152,7 @@ def generate_launch_description():
         params_file_arg,
         robot_state_publisher,
         base_driver_node,
+        safe_stop_node,
         lidar_node,
         filter_launch,
         map_server_node,

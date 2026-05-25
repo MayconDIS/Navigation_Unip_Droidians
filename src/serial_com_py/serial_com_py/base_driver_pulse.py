@@ -44,38 +44,17 @@ class BaseDriver(Node):
         self.tf_broadcaster = tf2_ros.TransformBroadcaster(self)
 
         self.last_time = self.get_clock().now()
-        self.last_cmd_time = self.get_clock().now()
-        self.cmd_v_linear  = 0.0
-        self.cmd_v_angular = 0.0
         self.timer = self.create_timer(0.02, self.leitura_serial)  # 50 Hz
 
     def cmd_callback(self, msg):
         MAX_VEL_LINEAR  = 0.5
         MAX_VEL_ANGULAR = 1.0
-        MAX_ACC_LINEAR  = 0.8  # m/s^2 — aceleração linear suave
-        MAX_ACC_ANGULAR = 1.5  # rad/s^2 — aceleração angular suave
 
-        now = self.get_clock().now()
-        dt = (now - self.last_cmd_time).nanoseconds / 1e9
-        self.last_cmd_time = now
-        if dt <= 0.0 or dt > 0.5:
-            dt = 0.02  # fallback
+        v_linear  = max(min(msg.linear.x,  MAX_VEL_LINEAR),  -MAX_VEL_LINEAR)
+        v_angular = max(min(msg.angular.z, MAX_VEL_ANGULAR), -MAX_VEL_ANGULAR)
 
-        target_v_linear  = max(min(msg.linear.x,  MAX_VEL_LINEAR),  -MAX_VEL_LINEAR)
-        target_v_angular = max(min(msg.angular.z, MAX_VEL_ANGULAR), -MAX_VEL_ANGULAR)
-
-        # Aplicar rampa de aceleração linear
-        dv_linear_max = MAX_ACC_LINEAR * dt
-        dv_linear = target_v_linear - self.cmd_v_linear
-        self.cmd_v_linear += max(min(dv_linear, dv_linear_max), -dv_linear_max)
-
-        # Aplicar rampa de aceleração angular
-        dv_angular_max = MAX_ACC_ANGULAR * dt
-        dv_angular = target_v_angular - self.cmd_v_angular
-        self.cmd_v_angular += max(min(dv_angular, dv_angular_max), -dv_angular_max)
-
-        v_left  = self.cmd_v_linear - (self.cmd_v_angular * self.largura_eixo / 2.0)
-        v_right = self.cmd_v_linear + (self.cmd_v_angular * self.largura_eixo / 2.0)
+        v_left  = v_linear - (v_angular * self.largura_eixo / 2.0)
+        v_right = v_linear + (v_angular * self.largura_eixo / 2.0)
 
         if self.ser and self.ser.is_open:
             comando = f"CMD:{v_left:.3f};{v_right:.3f}\n"
@@ -142,9 +121,11 @@ class BaseDriver(Node):
                             v_esq = dist_esq_delta / dt_sec
                             v_dir = dist_dir_delta / dt_sec
 
-                            # Remoção de negação global para alinhar o RViz com o deslocamento real
-                            v_linear  = ((v_dir + v_esq) / 2.0)
-                            v_angular = ((v_dir - v_esq) / self.largura_eixo)
+                            # FIX: negação global corrige RViz invertido
+                            # (frente/trás/esq/dir na vida real estavam certos,
+                            #  mas o robô andava ao contrário no RViz)
+                            v_linear  = -((v_dir + v_esq) / 2.0)
+                            v_angular = -((v_dir - v_esq) / self.largura_eixo)
 
                             current_time = self.get_clock().now()
                             self.x  += v_linear * math.cos(self.th) * dt_sec

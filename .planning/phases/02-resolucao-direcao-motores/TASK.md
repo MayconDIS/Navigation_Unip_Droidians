@@ -1,8 +1,8 @@
-# Tasks: Resolução do Problema de Direção e Controle de Motores
+# Tasks: Restauração da Base Física e Otimização da Navegação
 
-- [x] Modificar `odometrypulse-malha.ino` para implementar controle PI de 50Hz, interrupções nativas de hardware e remover TRIM estático
-- [x] Ajustar e calibrar sinais no driver `base_driver_pulse.py` (remoção de negações globais e alinhamento de direções)
-- [x] Adicionar nó `wasd_teleop.py` para controle do robô usando WASD no terminal e registrar em `setup.py`
-- [x] Salvar os arquivos implementados na pasta da Fase 2 do planejamento
-- [x] Atualizar os documentos de planejamento da Fase 2 com o feedback da conversa (priorização da trajetória retilínea, motor RPMs e adiamento do Nav2/Gazebo pós-dia 13)
-- [ ] Executar o plano de verificação (testes estáticos e de pista com teleoperação)
+- [x] Restaurar o firmware do Arduino (`odometrypulse-malha.ino`, `odometrypulse.ino`, `odometry_new.ino`) a partir do backup `Navigation-main`
+- [x] Restaurar os nós Python da base física e segurança (`base_driver.py`, `base_driver_pulse.py`, `base_driver_sim.py`, `safe_stop.py`) a partir do backup `Navigation-main`
+- [x] Ajustar os parâmetros de navegação para melhorar o comportamento diferencial (`nav2_params_realsense.yaml`, `nav2_params_sim.yaml`)
+- [x] Sintonizar/Ajustar `nav2_params.yaml` de forma a garantir as melhorias de navegação (tolerâncias de TF, controle diferencial, etc.)
+- [x] Atualizar os launch files (`udh1_core.launch.py`, `udh1_core_maping.launch.py`, `navigation.launch.py`) para apontar para os drivers e nós corretos restaurados
+- [x] Validar a compilação do workspace via `colcon build` (verificado via compilação de sintaxe Python dos scripts no workspace)

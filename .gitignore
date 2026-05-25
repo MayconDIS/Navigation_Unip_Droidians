@@ -1,0 +1,10 @@
+install/
+build/
+log/
+__pycache__/
+*.pyc
+.vscode/
+.agents/
+.planning/phases/*/__pycache__/
+.planning/graphs/
+.planning/tmp/
