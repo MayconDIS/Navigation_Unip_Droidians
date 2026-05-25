@@ -7,7 +7,7 @@ UNIPDroidians é o grupo de robótica da UNIP empenhado em desenvolver soluçõe
 - Integração com ROS 2 Humble e o framework **Nav2** (Navigation 2).
 - Localização AMCL (Adaptive Monte Carlo Localization) e mapeamento SLAM via **SLAM Toolbox**.
 - Driver Python de ponte serial (`serial_com_py`) e nó de monitoramento de segurança (`distance_watchdog`).
-- Firmwares de baixo nível do Arduino (`Arduino/`) com controle em malha fechada PI + Feedforward a 50Hz e interrupções externas nativas.
+- Firmwares de baixo nível do Arduino (`Arduino/`) originais baseados em interrupções estáveis de PCINT e loop de 10Hz.
 - Modelo cinemático/visual em URDF/Xacro (`udh1_description`) e simulação física no Gazebo Classic (`udh1_gazebo`).
 
 ## 📁 Conteúdo do repositório
