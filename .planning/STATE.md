@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: active
-stopped_at: Iniciando resolução do problema de controle de direção e malha de controle na Fase 2.
-last_updated: "2026-05-23T14:54:00.000Z"
-last_activity: 2026-05-23 -- Reestruturação do roadmap para focar no controle de direção antes do mapeamento.
+stopped_at: Fase 2 concluída com restauração de drivers e sintonia fina de parâmetros no Nav2/AMCL.
+last_updated: "2026-05-25T22:50:00.000Z"
+last_activity: 2026-05-25 -- Restauração de hardware e sintonia de parâmetros no Nav2/AMCL.
 progress:
   total_phases: 6
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 12
-  completed_plans: 2
-  percent: 16
+  completed_plans: 4
+  percent: 33
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-23)
 
 **Core value:** Navegação autônoma segura, robusta e precisa do robô de serviço doméstico UD-H1 em cenários de competição.
-**Current focus:** Fase 2: Resolução do Problema de Direção e Controle de Motores
+**Current focus:** Fase 3: Mapeamento e Sensorização
 
 ## Current Position
 
-Phase: 2 (Resolução do Problema de Direção e Controle de Motores) — ACTIVE
+Phase: 3 (Mapeamento e Sensorização) — PENDING
 Plan: 0 of 2 in current phase
-Status: Active
-Last activity: 2026-05-23 -- Novo plano de controle de motores e calibração de direção criado.
+Status: Pending
+Last activity: 2026-05-25 -- Fase 2 concluída via restauração de baseline e sintonia fina de parâmetros.
 
-Progress: [█░░░░░░░░░░░] 16%
+Progress: [████░░░░░░░░] 33%
 
 ## Performance Metrics
 

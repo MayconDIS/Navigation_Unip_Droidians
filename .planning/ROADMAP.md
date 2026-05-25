@@ -11,7 +11,7 @@ O roadmap deste módulo foi estruturado para desenvolver a pilha de navegação 
 - Decimal phases (e.g., 2.1): Urgent insertions (marked with INSERTED)
 
 - [x] **Phase 1: Driver de Base e Odometria** - Implementação da comunicação serial, comandos de movimentação e integração inicial de odometria (/odom e transformações).
-- [/] **Phase 2: Resolução do Problema de Direção e Controle de Motores** - Refatoração do loop de controle do Arduino para 50Hz, implementação de PI + Feedforward, interrupções nativas e remoção do TRIM estático para resolver derrapagens.
+- [x] **Phase 2: Resolução do Problema de Direção e Controle de Motores** - Restauração do firmware/driver de controle estável e sintonia de parâmetros do Nav2/AMCL para robô diferencial.
 - [ ] **Phase 3: Mapeamento e Sensorização** - Driver do LIDAR RPLidar C1 integrado ao ROS 2 e geração do primeiro mapa estático via SLAM Toolbox.
 - [ ] **Phase 4: Calibração de Odometria e Filtros** - Resolução de inversões no RViz, calibração fina de translação/rotação e sintonia inicial do localizador AMCL.
 - [ ] **Phase 5: Configuração e Sintonia do Nav2** - Ajuste fino de costmaps local/global, planners de trajetória (TEB/DWB) e desvio de obstáculos dinâmicos em simulação e hardware real.
@@ -84,7 +84,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Driver de Base e Odometria | 2/2 | Completed | 2026-05-22 |
-| 2. Resolução do Problema de Direção | 0/2 | Active | |
+| 2. Resolução do Problema de Direção | 2/2 | Completed | 2026-05-25 |
 | 3. Mapeamento e Sensorização | 0/2 | Pending | |
 | 4. Calibração de Odometria e Filtros | 0/2 | Pending | |
 | 5. Configuração e Sintonia do Nav2 | 0/2 | Pending | |

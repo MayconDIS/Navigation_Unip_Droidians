@@ -20,8 +20,10 @@ Navegação autônoma segura, robusta e precisa do robô de serviço doméstico 
 ### Active
 
 - [ ] Calibração dinâmica da odometria física (ajuste fino dos fatores de escala de rotação/translação e tratamento de inversões de eixos).
-- [ ] Sintonia fina dos parâmetros de navegação do Nav2 (costmaps local/global, algoritmos de planejamento local como DWB/TEB e limites de aceleração).
 - [ ] Implementação de nó ROS 2 para automatizar a execução de sequências de waypoints (metas domésticas).
+
+### Validated (Adições)
+- [x] Sintonia fina dos parâmetros de navegação do Nav2 (costmaps local/global, algoritmos de planejamento local como DWB e limites de velocidade lateral para diferencial) para evitar travamento físico e timeouts (Fase 2).
 
 ### Out of Scope
 
@@ -58,6 +60,7 @@ Para garantir que o código seja testável sem o ROS 2 ativo e altamente extens�
 | Uso de Arduino para processamento de encoders | Evitar perdas de pulsos de alta frequência no processamento principal do ROS 2 | — Validated |
 | Protocolo serial baseado em string (`CMD:`/`ODO:`) | Simplicidade na depuração e processamento dos pacotes serial | — Validated |
 | Uso do SLAM Toolbox (online async) | Melhor desempenho em ambientes dinâmicos domésticos em comparação com gmapping/cartographer padrão | — Validated |
+| Restauração da base física estável e sintonia fina de parâmetros no Nav2 | A equipe estava relutante com novos firmwares de controle físico, sendo preferido reverter ao baseline original do backup e otimizar apenas os parâmetros de software (velocidade lateral, transform_tolerance e progress_checker) no Nav2 | — Validated (Fase 2) |
 
 ## Evolution
 
@@ -77,4 +80,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-23 for Navigation transition*
+*Last updated: 2026-05-25 for Navigation transition*
