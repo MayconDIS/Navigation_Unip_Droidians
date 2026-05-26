@@ -135,24 +135,37 @@ Para controlar o robô usando um gamepad (como o GameSir T4 Lite / Xbox 360), si
 
 ## 6. Fluxo de Trabalho de Execução Passo a Passo (Para Testar Hoje)
 
-Para movimentar o robô (seja por teclado ou por controle de videogame), você precisará de **dois terminais** no Ubuntu. Certifique-se de que o hardware físico esteja conectado e o controle esteja redirecionado antes de começar.
+Para movimentar o robô (seja por teclado ou por controle de videogame), você precisará de **dois terminais** no Ubuntu.
 
-### Passo 1: Inicializar a Base Física e Sensores (Terminal 1)
-No **Terminal 1** do Ubuntu:
+### Passo 1: Inicializar o Ambiente do Robô (Terminal 1)
+No **Terminal 1** do Ubuntu, configure o ambiente:
 ```bash
-# 1. Navegar até a pasta do workspace e carregar o ambiente do ROS
 cd ~/athome_ws
 source /opt/ros/humble/setup.bash
 source install/setup.bash
+```
 
-# 2. Conceder permissão de leitura/escrita para as portas USB/Serial
+Agora escolha se deseja testar em **Simulação** ou no **Robô Real**:
+
+#### Cenário A: Executar em Simulação (Gazebo + RViz2)
+Excelente para demonstrar ou testar código sem necessidade do hardware físico:
+```bash
+ros2 launch udh1_gazebo gazebo.launch.py
+```
+> Isso abrirá a janela gráfica do Gazebo Classic e o RViz2 na sua tela.
+
+#### Cenário B: Executar no Robô Físico Real
+Conecte os cabos do Arduino e do LIDAR ao computador e rode:
+```bash
+# Conceder permissão de leitura/escrita para as portas USB/Serial
 sudo chmod 666 /dev/ttyACM0
 sudo chmod 666 /dev/ttyUSB0
 
-# 3. Inicializar os drivers da base física do robô, sensores e modelo URDF
+# Inicializar os drivers da base física, sensores e modelo URDF
 ros2 launch my_robot_bringup udh1_core_maping.launch.py
 ```
-> **Nota**: Mantenha este terminal aberto. Ele roda o nó `base_driver`, que traduz os comandos `/cmd_vel` e envia para o Arduino.
+> **Nota**: Mantenha este terminal aberto. Ele roda os drivers principais que recebem a velocidade do teleop e enviam para os motores.
+
 
 ---
 
