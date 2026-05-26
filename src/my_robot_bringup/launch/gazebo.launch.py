@@ -22,12 +22,15 @@ def generate_launch_description():
         parameters=[robot_desc]
     )
 
+    pkg_my_robot_bringup = get_package_share_directory('my_robot_bringup')
+    mapas_dir = os.path.abspath(os.path.join(pkg_my_robot_bringup, '..', '..', '..', '..', 'src', 'Navigation_Unip_Droidians', 'mapas'))
+
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(pkg_gazebo_ros, 'launch', 'gazebo.launch.py')
         ),
         launch_arguments={
-            'world': '/home/joao/Navigation/mapas/udh1_mapa.world'
+            'world': os.path.join(mapas_dir, 'udh1_mapa.world')
         }.items()
     )
 
@@ -44,7 +47,7 @@ def generate_launch_description():
         name='map_server',
         output='screen',
         parameters=[{
-            'yaml_filename': '/home/joao/Navigation/mapas/udh1_mapa.yaml',
+            'yaml_filename': os.path.join(mapas_dir, 'udh1_mapa.yaml'),
             'use_sim_time': True
         }]
     )
@@ -93,7 +96,7 @@ def generate_launch_description():
         executable='rviz2',
         name='rviz2',
         output='screen',
-        arguments=['-d', '/home/joao/Navigation/src/my_robot_bringup/rviz/nav2_udh1.rviz']
+        arguments=['-d', os.path.join(mapas_dir, 'nav2_udh1.rviz')]
     )
 
     return LaunchDescription([
