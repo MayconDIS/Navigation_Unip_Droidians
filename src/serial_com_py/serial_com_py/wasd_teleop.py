@@ -15,7 +15,7 @@ Comandos:
         [W]
    [A]  [S]  [D]
 
-* W/S : Frente / Trás (0.2 m/s)
+* W/S : Frente / Trás (0.15 m/s)
 * A/D : Esquerda / Direita (0.6 rad/s)
 * Espaço ou qualquer outra tecla : Parar o robô
 
@@ -35,7 +35,7 @@ class WASDTeleop(Node):
     def __init__(self):
         super().__init__('wasd_teleop')
         self.pub = self.create_publisher(Twist, 'cmd_vel', 10)
-        self.speed = 0.2  # m/s
+        self.speed = 0.15  # m/s
         self.turn = 0.6   # rad/s
         
         self.get_logger().info("Nó wasd_teleop carregado. Aguardando comandos do teclado...")
