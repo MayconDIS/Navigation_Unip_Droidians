@@ -28,7 +28,6 @@ setup(
     entry_points={
     'console_scripts': [
         'base_driver = serial_com_py.base_driver:main',
-        'base_driver_pulse = serial_com_py.base_driver_pulse:main', # <--- ADICIONE ESTA LINHA
     ],
     },
 )

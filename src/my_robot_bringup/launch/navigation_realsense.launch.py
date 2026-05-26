@@ -46,7 +46,7 @@ def generate_launch_description():
 
     base_driver_node = Node(
         package='serial_com_py',
-        executable='base_driver_pulse',
+        executable='base_driver',
         name='udh1_base_driver',
         output='screen'
     )
