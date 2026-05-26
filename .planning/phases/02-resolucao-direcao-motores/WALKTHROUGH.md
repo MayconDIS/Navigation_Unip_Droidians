@@ -7,7 +7,7 @@ Este walkthrough documenta as alterações finais e validadas da **Fase 2** para
 ## Changes Made
 
 ### 1. Restauração e Estabilização Física (Arduino e Python)
-*   **Reversão**: Devido a problemas de derrapagem e instabilidade no controle de baixo nível anterior, restauramos o firmware original do Arduino ([odometrypulse-malha.ino](file:///c:/Users/mayco/Documents/PROJECTS/Navigation_Unip_Droidians/Arduino/odometrypulse-malha/odometrypulse-malha.ino)) e o driver da base ([base_driver.py](file:///c:/Users/mayco/Documents/PROJECTS/Navigation_Unip_Droidians/src/serial_com_py/serial_com_py/base_driver.py)) a partir do backup estável `Navigation-main`.
+*   **Reversão**: Devido a problemas de derrapagem e instabilidade no controle de baixo nível anterior, restauramos o firmware original do Arduino ([odometrypulse-malha.ino](file:///c:/Users/mayco/Documents/GitHub/Navigation_Unip_Droidians/Arduino/odometrypulse-malha/odometrypulse-malha.ino)) e o driver da base ([base_driver.py](file:///c:/Users/mayco/Documents/GitHub/Navigation_Unip_Droidians/src/serial_com_py/serial_com_py/base_driver.py)) a partir do backup estável `Navigation-main`.
 *   **TRIM Estático**: Mantido o ajuste de TRIM estático para alinhamento físico estável das rodas.
 *   **Segurança**: O nó `safe_stop` foi integrado de volta nos launchs para proteção contra colisões frontais.
 
@@ -20,20 +20,20 @@ Este walkthrough documenta as alterações finais e validadas da **Fase 2** para
     - Remoção de recuperações agressivas de rotação (plugin `spin`) para locais apertados.
 
 ### 3. Teleoperação via Teclado (Retentivo / Latching)
-*   **Implementação**: Refatorado o nó [wasd_teleop.py](file:///c:/Users/mayco/Documents/PROJECTS/Navigation_Unip_Droidians/src/serial_com_py/serial_com_py/wasd_teleop.py).
+*   **Implementação**: Refatorado o nó [wasd_teleop.py](file:///c:/Users/mayco/Documents/GitHub/Navigation_Unip_Droidians/src/serial_com_py/serial_com_py/wasd_teleop.py).
 *   **Velocidade**: Velocidade linear ajustada para o limite seguro de `0.15 m/s` (reduzido de 0.20 m/s).
 *   **Comportamento**: Roda continuamente no clique da tecla (W/S/A/D) e para apenas ao pressionar **Espaço** ou enviar sinal de interrupção (Ctrl+C).
 
 ### 4. Teleoperação via Joystick (GameSir T4 Lite / Xbox 360)
-*   **Código**: Criado o script [joystick_teleop.py](file:///c:/Users/mayco/Documents/PROJECTS/Navigation_Unip_Droidians/src/serial_com_py/serial_com_py/joystick_teleop.py).
+*   **Código**: Criado o script [joystick_teleop.py](file:///c:/Users/mayco/Documents/GitHub/Navigation_Unip_Droidians/src/serial_com_py/serial_com_py/joystick_teleop.py).
 *   **Controle Seguro**: Implementado botão morto (**LB**) de segurança. O robô só se move ao segurar LB e utilizar o analógico esquerdo. Soltar o botão interrompe o movimento de imediato.
-*   **Launch File**: Criado [joystick_teleop.launch.py](file:///c:/Users/mayco/Documents/PROJECTS/Navigation_Unip_Droidians/src/my_robot_bringup/launch/joystick_teleop.launch.py) inicializando o `joy_node` e o tradutor juntos.
+*   **Launch File**: Criado [joystick_teleop.launch.py](file:///c:/Users/mayco/Documents/GitHub/Navigation_Unip_Droidians/src/my_robot_bringup/launch/joystick_teleop.launch.py) inicializando o `joy_node` e o tradutor juntos.
 
 ---
 
 ## Verification & Usage Steps
 
-A compilação do workspace foi validada com sucesso via `colcon build`. Para operar os controles, siga as instruções atualizadas no [COMO_EXECUTAR.md](file:///c:/Users/mayco/Documents/PROJECTS/Navigation_Unip_Droidians/docs/COMO_EXECUTAR.md).
+A compilação do workspace foi validada com sucesso via `colcon build`. Para operar os controles, siga as instruções atualizadas no [COMO_EXECUTAR.md](file:///c:/Users/mayco/Documents/GitHub/Navigation_Unip_Droidians/docs/COMO_EXECUTAR.md).
 
 ### Resolução de Conexão do Controle (erro `Device busy` no `usbipd`):
 Se o redirecionamento USB travar no Windows:
