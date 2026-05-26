@@ -82,9 +82,10 @@ def main(args=None):
                 elif key == '\x03':  # CTRL+C
                     break
             else:
-                # Se não receber nenhuma tecla por 3 ciclos (0.15s), para o robô automaticamente
+                # Se não receber nenhuma tecla por 10 ciclos (0.50s), para o robô automaticamente
+                # Isso evita que o robô pare durante o delay de repetição do teclado ou na transição de teclas
                 empty_key_count += 1
-                if empty_key_count >= 3:
+                if empty_key_count >= 10:
                     if linear_vel != 0.0 or angular_vel != 0.0:
                         linear_vel = 0.0
                         angular_vel = 0.0
