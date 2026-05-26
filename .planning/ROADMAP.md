@@ -11,8 +11,8 @@ O roadmap deste módulo foi estruturado para desenvolver a pilha de navegação 
 - Decimal phases (e.g., 2.1): Urgent insertions (marked with INSERTED)
 
 - [x] **Phase 1: Driver de Base e Odometria** - Implementação da comunicação serial, comandos de movimentação e integração inicial de odometria (/odom e transformações).
-- [x] **Phase 2: Resolução do Problema de Direção e Controle de Motores** - Restauração do firmware/driver de controle estável e sintonia de parâmetros do Nav2/AMCL para robô diferencial.
-- [ ] **Phase 3: Mapeamento e Sensorização** - Driver do LIDAR RPLidar C1 integrado ao ROS 2 e geração do primeiro mapa estático via SLAM Toolbox.
+- [x] **Phase 2: Resolução do Problema de Direção, Otimização da Navegação e Teleoperação** - Restauração do firmware base estável, sintonia fina de parâmetros no Nav2/AMCL, e implementação de teleoperação manual por teclado (WASD) e joystick (GameSir/Xbox 360).
+- [/] **Phase 3: Mapeamento e Sensorização** - Driver do LIDAR RPLidar C1 integrado ao ROS 2 e geração do primeiro mapa estático via SLAM Toolbox.
 - [ ] **Phase 4: Calibração de Odometria e Filtros** - Resolução de inversões no RViz, calibração fina de translação/rotação e sintonia inicial do localizador AMCL.
 - [ ] **Phase 5: Configuração e Sintonia do Nav2** - Ajuste fino de costmaps local/global, planners de trajetória (TEB/DWB) e desvio de obstáculos dinâmicos em simulação e hardware real.
 - [ ] **Phase 6: Automação de Waypoints (Metas Sequenciais)** - Criação de nó ROS 2 para controle sequencial de waypoints e envio de metas de navegação para competições.
@@ -28,15 +28,15 @@ O roadmap deste módulo foi estruturado para desenvolver a pilha de navegação 
   2. O nó recebe leituras dos encoders e publica dados de odometria no frame `odom` e transform `/odom -> /base_footprint`.
 **Plans**: 2 plans (Completed)
 
-### Phase 2: Resolução do Problema de Direção e Controle de Motores
-**Goal**: Implementar controle em malha fechada robusto e calibração fina para eliminar o desvio e derrapagem do robô.
+### Phase 2: Resolução do Problema de Direção, Otimização da Navegação e Teleoperação
+**Goal**: Restaurar a estabilidade da base mecânica física e habilitar o controle flexível via teclado e joystick com sintonias de navegação em alto nível.
 **Depends on**: Phase 1
 **Requirements**: [DRV-03, DRV-04]
 **Success Criteria**:
-  1. O Arduino executa o controle de velocidade em malha fechada a 50Hz (20ms) usando controlador PI + Feedforward, compensando a assimetria física dos motores sem dependência de TRIM estático.
-  2. O robô navega em linha reta via teleoperação WASD com desvio lateral medido inferior a 5 cm por metro (derrapagem resolvida).
-  3. Comportamentos anômalos complexos (como quebra do mapa no Nav2 e teletransporte no simulador Gazebo) são identificados e mapeados para tratamento posterior (pós-dia 13).
-**Plans**: 2 plans
+  1. Reversão bem-sucedida do firmware do Arduino e drivers Python para o estado estável do backup `Navigation-main`.
+  2. Implementação das duas formas de teleoperação manual (teclado WASD a 0.15 m/s em modo de retenção, e joystick com botão de segurança LB).
+  3. Parâmetros de tolerância de TF e checker de progresso do Nav2 sintonizados para evitar paradas e erros no robô diferencial.
+**Plans**: 2 plans (Completed)
 
 ### Phase 3: Mapeamento e Sensorização
 **Goal**: Integrar o LIDAR e gerar o mapa inicial 2D do ambiente de testes.
@@ -84,8 +84,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Driver de Base e Odometria | 2/2 | Completed | 2026-05-22 |
-| 2. Resolução do Problema de Direção | 2/2 | Completed | 2026-05-25 |
-| 3. Mapeamento e Sensorização | 0/2 | Pending | |
+| 2. Resolução do Problema de Direção | 2/2 | Completed | 2026-05-26 |
+| 3. Mapeamento e Sensorização | 0/2 | Active | |
 | 4. Calibração de Odometria e Filtros | 0/2 | Pending | |
 | 5. Configuração e Sintonia do Nav2 | 0/2 | Pending | |
 | 6. Automação de Waypoints (Metas Sequenciais) | 0/2 | Pending | |

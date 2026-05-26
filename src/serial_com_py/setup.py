@@ -31,6 +31,7 @@ setup(
             'safe_stop = serial_com_py.safe_stop:main',
             'distance_watchdog = serial_com_py.distance_watchdog:main',
             'wasd_teleop = serial_com_py.wasd_teleop:main',
+            'joystick_teleop = serial_com_py.joystick_teleop:main',
         ],
     },
 )

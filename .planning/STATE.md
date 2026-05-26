@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: active
-stopped_at: Fase 2 concluída com restauração de drivers e sintonia fina de parâmetros no Nav2/AMCL.
-last_updated: "2026-05-25T22:50:00.000Z"
-last_activity: 2026-05-25 -- Restauração de hardware e sintonia de parâmetros no Nav2/AMCL.
+stopped_at: Fase 2 concluída com sucesso (restauração estável, teclado WASD a 0.15 m/s, joystick GameSir T4 Lite e sintonias do Nav2). Pronto para iniciar Fase 3 de Mapeamento e Sensorização.
+last_updated: "2026-05-26T18:31:00.000Z"
+last_activity: 2026-05-26 -- Conclusão da Fase 2 e liberação dos controles por teclado e joystick.
 progress:
   total_phases: 6
   completed_phases: 2
@@ -25,26 +25,26 @@ See: .planning/PROJECT.md (updated 2026-05-23)
 
 ## Current Position
 
-Phase: 3 (Mapeamento e Sensorização) — PENDING
+Phase: 3 (Mapeamento e Sensorização) — ACTIVE
 Plan: 0 of 2 in current phase
-Status: Pending
-Last activity: 2026-05-25 -- Fase 2 concluída via restauração de baseline e sintonia fina de parâmetros.
+Status: Active
+Last activity: 2026-05-26 -- Conclusão da Fase 2 e liberação dos controles por teclado e joystick.
 
 Progress: [████░░░░░░░░] 33%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2 (Fase 1 completada)
-- Average duration: 15 min
-- Total execution time: 0.5 hours
+- Total plans completed: 4 (Fase 1 e Fase 2 completadas)
+- Average duration: 12 min
+- Total execution time: 0.8 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1. Driver de Base e Odometria | 2/2 | 30 min | 15 min |
-| 2. Resolução do Problema de Direção | 0/2 | 0 min | 0 min |
+| 2. Resolução do Problema de Direção | 2/2 | 20 min | 10 min |
 | 3. Mapeamento e Sensorização | 0/2 | 0 min | 0 min |
 | 4. Calibração de Odometria e Filtros | 0/2 | 0 min | 0 min |
 | 5. Configuração e Sintonia do Nav2 | 0/2 | 0 min | 0 min |
@@ -57,13 +57,12 @@ Progress: [████░░░░░░░░] 33%
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 - [Phase 1]: Uso de Arduino para contagem e controle de velocidade das rodas para evitar sobrecarga no ROS 2.
-- [Phase 2]: Aumento da frequência do loop de controle para 50Hz e uso de PI + Feedforward nativo para evitar derrapagens.
+- [Phase 2]: Reversão das alterações do controlador PI + Feedforward no Arduino para o firmware estável de produção anterior do backup `Navigation-main`. Toda a estabilização direcional e correção de skidding é resolvida via parâmetros de alto nível do Nav2/AMCL. Implementado teleop por joystick (GameSir T4 Lite / Xbox 360) e teclado WASD (latching).
 
 ### Pending Todos
 
-- Realizar o teste estático com as rodas suspensas para validar o sentido dos motores.
-- Executar o teste dinâmico de pista de 1 metro com teleoperação WASD para validar a linearidade física e ausência de derrapagem (skidding).
-- Calibrar o fator de escala de rotação e translação no driver de odometria (`base_driver_pulse.py`) com base nos desvios reais.
+- Conectar fisicamente o LIDAR RPLidar C1 e verificar recepção de pacotes no tópico `/scan`.
+- Executar SLAM Toolbox e gerar mapa estático inicial para a pista de testes.
 
 ### Blockers/Concerns
 
@@ -80,6 +79,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-05-23 14:54
-Stopped at: Finalizada a inclusão da Fase 2 de Direção. Prontos para testar o código do Arduino.
+Last session: 2026-05-26 18:31
+Stopped at: Fase 2 finalizada com sucesso e documentada no plano, tasks, walkthrough e summary.
 Resume file: None
