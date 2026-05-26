@@ -48,7 +48,6 @@ def main(args=None):
     
     linear_vel = 0.0
     angular_vel = 0.0
-    empty_key_count = 0
     
     try:
         print(msg)
@@ -82,15 +81,6 @@ def main(args=None):
                     print(f"\rComando: PARAR (vel=0.0)                            ", end="")
                 elif key == '\x03':  # CTRL+C
                     break
-            else:
-                # Se não receber nenhuma tecla por 5 ciclos (0.25s), para o robô automaticamente
-                # Como mantemos o terminal em raw mode, a repetição de teclas é contínua e sem falhas
-                empty_key_count += 1
-                if empty_key_count >= 5:
-                    if linear_vel != 0.0 or angular_vel != 0.0:
-                        linear_vel = 0.0
-                        angular_vel = 0.0
-                        print(f"\rComando: PARAR AUTOMÁTICO (soltou a tecla)           ", end="")
             
             twist = Twist()
             twist.linear.x = float(linear_vel)
