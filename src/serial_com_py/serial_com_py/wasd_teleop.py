@@ -50,34 +50,45 @@ def main(args=None):
     
     linear_vel = 0.0
     angular_vel = 0.0
+    empty_key_count = 0
     
     try:
         print(msg)
         while rclpy.ok():
             key = getKey(settings)
             
-            if key == 'w' or key == 'W':
-                linear_vel = node.speed
-                angular_vel = 0.0
-                print(f"\rComando: FRENTE (vel={linear_vel:.2f} m/s)             ", end="")
-            elif key == 's' or key == 'S':
-                linear_vel = -node.speed
-                angular_vel = 0.0
-                print(f"\rComando: TRÁS (vel={linear_vel:.2f} m/s)             ", end="")
-            elif key == 'a' or key == 'A':
-                linear_vel = 0.0
-                angular_vel = node.turn
-                print(f"\rComando: ESQUERDA (ang={angular_vel:.2f} rad/s)       ", end="")
-            elif key == 'd' or key == 'D':
-                linear_vel = 0.0
-                angular_vel = -node.turn
-                print(f"\rComando: DIREITA (ang={angular_vel:.2f} rad/s)        ", end="")
-            elif key == ' ' or (key != '' and ord(key) != 0):
-                linear_vel = 0.0
-                angular_vel = 0.0
-                print(f"\rComando: PARAR (vel=0.0)                            ", end="")
-                if key == '\x03':  # CTRL+C
+            if key != '':
+                empty_key_count = 0
+                if key == 'w' or key == 'W':
+                    linear_vel = node.speed
+                    angular_vel = 0.0
+                    print(f"\rComando: FRENTE (vel={linear_vel:.2f} m/s)             ", end="")
+                elif key == 's' or key == 'S':
+                    linear_vel = -node.speed
+                    angular_vel = 0.0
+                    print(f"\rComando: TRÁS (vel={linear_vel:.2f} m/s)             ", end="")
+                elif key == 'a' or key == 'A':
+                    linear_vel = 0.0
+                    angular_vel = node.turn
+                    print(f"\rComando: ESQUERDA (ang={angular_vel:.2f} rad/s)       ", end="")
+                elif key == 'd' or key == 'D':
+                    linear_vel = 0.0
+                    angular_vel = -node.turn
+                    print(f"\rComando: DIREITA (ang={angular_vel:.2f} rad/s)        ", end="")
+                elif key == ' ':
+                    linear_vel = 0.0
+                    angular_vel = 0.0
+                    print(f"\rComando: PARAR (vel=0.0)                            ", end="")
+                elif key == '\x03':  # CTRL+C
                     break
+            else:
+                # Se não receber nenhuma tecla por 3 ciclos (0.15s), para o robô automaticamente
+                empty_key_count += 1
+                if empty_key_count >= 3:
+                    if linear_vel != 0.0 or angular_vel != 0.0:
+                        linear_vel = 0.0
+                        angular_vel = 0.0
+                        print(f"\rComando: PARAR AUTOMÁTICO (soltou a tecla)           ", end="")
             
             twist = Twist()
             twist.linear.x = float(linear_vel)
