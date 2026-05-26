@@ -1,43 +1,43 @@
-# Walkthrough: Resolução do Problema de Direção e Controle de Motores
+# Walkthrough: Restauração da Base Física, Otimização de Navegação e Teleoperação
 
-Este walkthrough documenta as alterações realizadas para resolver o problema físico do robô UD-H1 de desviar de rota ou derrapar.
-
-## Changes Made
-
-### 1. Firmware do Arduino (`Arduino/odometrypulse-malha/`)
-*   **Frequência da Malha Fechada**: Aumentada para **50 Hz** (período de 20ms) para reduzir o tempo de reação de correção das rodas.
-*   **Controlador PI + Feedforward**: Implementada a fórmula completa de PI e Feedforward com proteção contra estouro da parcela integral (anti-windup).
-*   **Interrupções de Hardware**: Alterado o código para usar a função `attachInterrupt` direta de hardware do Arduino Uno/Mega nos pinos 2 e 3 (`INT0` e `INT1`) em vez da biblioteca `PinChangeInterrupt`, eliminando a perda de pulsos em velocidades mais altas.
-*   **Remoção de TRIM**: Desativado o TRIM estático para evitar disputas com a malha fechada.
-
-### 2. Driver de Odometria ROS 2 (`serial_com_py/`)
-*   **Rampas de Aceleração Suaves**: Adicionadas rampas de limite de aceleração linear ($0.8\text{ m/s}^2$) e angular ($1.5\text{ rad/s}^2$) para suavizar comandos bruscos e evitar derrapagens.
-*   **Remoção de Negações de Eixo**: Removida a negação global redundante das velocidades calculadas no script Python, restaurando a consistência cinemática do TF com o AMCL e os costmaps.
-
-### 3. Utilidade de Teleoperação WASD
-*   **WASD Teleop**: Criado o nó [wasd_teleop.py](file:///c:/Users/mayco/Documents/GitHub/Navigation_Unip_Droidians/src/serial_com_py/serial_com_py/wasd_teleop.py) e adicionada sua entrada no [setup.py](file:///c:/Users/mayco/Documents/GitHub/Navigation_Unip_Droidians/src/serial_com_py/setup.py) para permitir controle direcional direto.
-
-### 4. Reestruturação do Planejamento GSD
-*   Inserção da **Fase 2: Resolução do Problema de Direção e Controle de Motores** como a fase ativa e deslocamento de "Mapeamento e Sensorização" para a **Fase 3**.
+Este walkthrough documenta as alterações finais e validadas da **Fase 2** para estabilização física do robô, sintonia fina de navegação autônoma de alto nível e opções de controle manual (teclado e joystick).
 
 ---
 
-## Verification Plan & Steps for the Team
+## Changes Made
 
-Como o robô necessita de validação física no laboratório, a equipe deve seguir estes passos de teste (com foco principal em teleoperação e retilineidade física antes do dia 13):
+### 1. Restauração e Estabilização Física (Arduino e Python)
+*   **Reversão**: Devido a problemas de derrapagem e instabilidade no controle de baixo nível anterior, restauramos o firmware original do Arduino ([odometrypulse-malha.ino](file:///c:/Users/mayco/Documents/PROJECTS/Navigation_Unip_Droidians/Arduino/odometrypulse-malha/odometrypulse-malha.ino)) e o driver da base ([base_driver.py](file:///c:/Users/mayco/Documents/PROJECTS/Navigation_Unip_Droidians/src/serial_com_py/serial_com_py/base_driver.py)) a partir do backup estável `Navigation-main`.
+*   **TRIM Estático**: Mantido o ajuste de TRIM estático para alinhamento físico estável das rodas.
+*   **Segurança**: O nó `safe_stop` foi integrado de volta nos launchs para proteção contra colisões frontais.
 
-1.  **Validação com Rodas Suspensas (Estático)**:
-    *   Suspender o robô para evitar contato com o chão.
-    *   Iniciar a teleoperação WASD customizada da equipe:
-        ```bash
-        ros2 run serial_com_py wasd_teleop
-        ```
-    *   Pressionar **W** e verificar se as duas rodas giram na mesma velocidade para a frente.
-2.  **Validação de Coordenadas de Odometria**:
-    *   Comandar o robô para frente: verificar se a pose X no tópico `/odom` aumenta positivamente (correto no RViz2, conforme observado pela equipe).
-    *   Comandar rotação para a esquerda: verificar se a pose angular yaw (orientação Z) aumenta positivamente (regra da mão direita).
-3.  **Teste de Direção Retilínea no Piso (Foco Prioritário)**:
-    *   Colocar o robô em uma marcação retilínea no chão e enviar comando linear constante.
-    *   Verificar se o desvio lateral na distância de 1 metro é inferior a **5 cm**.
+### 2. Sintonia Fina do Nav2 e AMCL (Alto Nível)
+*   **Arquivos de Parâmetros**: Configurados e sincronizados em `nav2_params.yaml`, `nav2_params_realsense.yaml` e `nav2_params_sim.yaml`.
+*   **Ajustes Críticos**:
+    - Frequência de planejamento reduzida para `5.0 Hz` para aliviar carga de processamento.
+    - Tolerância a latência de TF (`transform_tolerance`) aumentada de `1.0s` para `1.5s` no AMCL e de `0.2s` para `1.0s` no controlador DWB.
+    - Limiar de progresso (`SimpleProgressChecker`) relaxado de `0.5m` para `0.3m` e timeout aumentado para `15.0s`.
+    - Remoção de recuperações agressivas de rotação (plugin `spin`) para locais apertados.
 
-*Nota: Testes de navegação autônoma pelo Nav2 (onde ocorria a instabilidade no mapa) e comportamento de simulação no Gazebo (teletransporte) foram postergados para a próxima fase (pós-dia 13).*
+### 3. Teleoperação via Teclado (Retentivo / Latching)
+*   **Implementação**: Refatorado o nó [wasd_teleop.py](file:///c:/Users/mayco/Documents/PROJECTS/Navigation_Unip_Droidians/src/serial_com_py/serial_com_py/wasd_teleop.py).
+*   **Velocidade**: Velocidade linear ajustada para o limite seguro de `0.15 m/s` (reduzido de 0.20 m/s).
+*   **Comportamento**: Roda continuamente no clique da tecla (W/S/A/D) e para apenas ao pressionar **Espaço** ou enviar sinal de interrupção (Ctrl+C).
+
+### 4. Teleoperação via Joystick (GameSir T4 Lite / Xbox 360)
+*   **Código**: Criado o script [joystick_teleop.py](file:///c:/Users/mayco/Documents/PROJECTS/Navigation_Unip_Droidians/src/serial_com_py/serial_com_py/joystick_teleop.py).
+*   **Controle Seguro**: Implementado botão morto (**LB**) de segurança. O robô só se move ao segurar LB e utilizar o analógico esquerdo. Soltar o botão interrompe o movimento de imediato.
+*   **Launch File**: Criado [joystick_teleop.launch.py](file:///c:/Users/mayco/Documents/PROJECTS/Navigation_Unip_Droidians/src/my_robot_bringup/launch/joystick_teleop.launch.py) inicializando o `joy_node` e o tradutor juntos.
+
+---
+
+## Verification & Usage Steps
+
+A compilação do workspace foi validada com sucesso via `colcon build`. Para operar os controles, siga as instruções atualizadas no [COMO_EXECUTAR.md](file:///c:/Users/mayco/Documents/PROJECTS/Navigation_Unip_Droidians/docs/COMO_EXECUTAR.md).
+
+### Resolução de Conexão do Controle (erro `Device busy` no `usbipd`):
+Se o redirecionamento USB travar no Windows:
+1. Reinicie o sistema operacional Windows para descarregar hooks ativos.
+2. Feche a **Steam** e qualquer outro mapeador de gamepad em execução na barra de tarefas.
+3. Altere o modo de emparelhamento do controle segurando `Home + A` ou `Home + X`.
+4. Plugue o cabo em outra porta USB para obter um novo BUSID antes de rodar `usbipd attach`.
