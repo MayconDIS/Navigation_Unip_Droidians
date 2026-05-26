@@ -1,0 +1,15 @@
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# ROS 2 build artifacts
+build/
+install/
+log/
+
+# IDE files
+.vscode/
+.agents/
+.planning/graphs/
