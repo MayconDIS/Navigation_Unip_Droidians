@@ -131,3 +131,60 @@ Para controlar o robô usando um gamepad (como o GameSir T4 Lite / Xbox 360), si
    ```
    *   **Como controlar:** Mantenha o botão **LB** (botão morto de segurança) pressionado e use o **analógico esquerdo** para se movimentar (frente/trás e curvas). Soltar o botão **LB** para o robô imediatamente.
 
+---
+
+## 6. Fluxo de Trabalho de Execução Passo a Passo (Para Testar Hoje)
+
+Para movimentar o robô (seja por teclado ou por controle de videogame), você precisará de **dois terminais** no Ubuntu. Certifique-se de que o hardware físico esteja conectado e o controle esteja redirecionado antes de começar.
+
+### Passo 1: Inicializar a Base Física e Sensores (Terminal 1)
+No **Terminal 1** do Ubuntu:
+```bash
+# 1. Navegar até a pasta do workspace e carregar o ambiente do ROS
+cd ~/athome_ws
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+
+# 2. Conceder permissão de leitura/escrita para as portas USB/Serial
+sudo chmod 666 /dev/ttyACM0
+sudo chmod 666 /dev/ttyUSB0
+
+# 3. Inicializar os drivers da base física do robô, sensores e modelo URDF
+ros2 launch my_robot_bringup udh1_core_maping.launch.py
+```
+> **Nota**: Mantenha este terminal aberto. Ele roda o nó `base_driver`, que traduz os comandos `/cmd_vel` e envia para o Arduino.
+
+---
+
+### Passo 2: Escolher o Método de Teleoperação (Terminal 2)
+Abra um **novo terminal (Terminal 2)** no Ubuntu, navegue e configure o ambiente:
+```bash
+cd ~/athome_ws
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+```
+
+Agora, execute **uma** das opções abaixo:
+
+#### Opção A: Controle via Teclado (WASD)
+```bash
+ros2 run serial_com_py wasd_teleop
+```
+*   **Movimentação**: Clique nas teclas **W** (Frente), **S** (Trás), **A** (Curva Esquerda) e **D** (Curva Direita).
+*   **Parada de Emergência**: Pressione a barra de **Espaço** para parar o robô imediatamente.
+
+#### Opção B: Controle via Joystick (GameSir T4 Lite)
+*(Antes de rodar, certifique-se de ter conectado o controle no PowerShell do Windows como Administrador via: `usbipd attach --wsl --busid 1-11`)*
+
+No **Terminal 2**, libere a permissão do joystick no Linux e inicie a execução:
+```bash
+# Libera acesso ao dispositivo de joystick
+sudo chmod 666 /dev/input/js0
+
+# Inicializa o joy_node e o tradutor de comandos
+ros2 launch my_robot_bringup joystick_teleop.launch.py
+```
+*   **Movimentação**: Mantenha pressionado o botão **LB** (botão de segurança) e empurre o **analógico esquerdo** para se movimentar.
+*   **Parada de Emergência**: Apenas solte o botão **LB** (ou desligue o controle) e o robô irá parar de forma instantânea.
+
+
