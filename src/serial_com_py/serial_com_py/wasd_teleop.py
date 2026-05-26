@@ -23,14 +23,12 @@ Pressione CTRL+C para fechar.
 ===================================================
 """
 
-def getKey(settings):
-    tty.setraw(sys.stdin.fileno())
+def getKey():
     rlist, _, _ = select.select([sys.stdin], [], [], 0.05)
     if rlist:
         key = sys.stdin.read(1)
     else:
         key = ''
-    termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, settings)
     return key
 
 class WASDTeleop(Node):
@@ -54,8 +52,11 @@ def main(args=None):
     
     try:
         print(msg)
+        # Define o modo raw do terminal uma única vez na inicialização
+        tty.setraw(sys.stdin.fileno())
+        
         while rclpy.ok():
-            key = getKey(settings)
+            key = getKey()
             
             if key != '':
                 empty_key_count = 0
@@ -82,10 +83,10 @@ def main(args=None):
                 elif key == '\x03':  # CTRL+C
                     break
             else:
-                # Se não receber nenhuma tecla por 12 ciclos (0.60s), para o robô automaticamente
-                # Isso evita que o robô pare durante o delay de repetição do teclado ou na transição de teclas
+                # Se não receber nenhuma tecla por 5 ciclos (0.25s), para o robô automaticamente
+                # Como mantemos o terminal em raw mode, a repetição de teclas é contínua e sem falhas
                 empty_key_count += 1
-                if empty_key_count >= 12:
+                if empty_key_count >= 5:
                     if linear_vel != 0.0 or angular_vel != 0.0:
                         linear_vel = 0.0
                         angular_vel = 0.0
@@ -101,6 +102,7 @@ def main(args=None):
     finally:
         twist = Twist()
         node.pub.publish(twist)
+        # Restaura as configurações originais do terminal uma única vez ao encerrar
         termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, settings)
         node.destroy_node()
         rclpy.shutdown()
