@@ -68,13 +68,13 @@ def main(args=None):
                     angular_vel = 0.0
                     print(f"\rComando: TRÁS (vel={linear_vel:.2f} m/s)             ", end="")
                 elif key == 'a' or key == 'A':
-                    linear_vel = 0.0
+                    # Mantém a velocidade linear atual para permitir curvar em movimento
                     angular_vel = node.turn
-                    print(f"\rComando: ESQUERDA (ang={angular_vel:.2f} rad/s)       ", end="")
+                    print(f"\rComando: CURVA ESQUERDA (vel={linear_vel:.2f} m/s, ang={angular_vel:.2f} rad/s)", end="")
                 elif key == 'd' or key == 'D':
-                    linear_vel = 0.0
+                    # Mantém a velocidade linear atual para permitir curvar em movimento
                     angular_vel = -node.turn
-                    print(f"\rComando: DIREITA (ang={angular_vel:.2f} rad/s)        ", end="")
+                    print(f"\rComando: CURVA DIREITA (vel={linear_vel:.2f} m/s, ang={angular_vel:.2f} rad/s) ", end="")
                 elif key == ' ':
                     linear_vel = 0.0
                     angular_vel = 0.0
