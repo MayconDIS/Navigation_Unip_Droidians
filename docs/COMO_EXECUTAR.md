@@ -88,6 +88,46 @@ Para movimentar o robô manualmente usando o terminal, abra um **novo terminal**
 ros2 run serial_com_py wasd_teleop
 ```
 
-*   **W / S**: Move para frente / trás ($0.2\text{ m/s}$)
+*   **W / S**: Move para frente / trás ($0.15\text{ m/s}$)
 *   **A / D**: Rotaciona para esquerda / direita ($0.6\text{ rad/s}$)
 *   **Barra de Espaço**: Para o robô imediatamente.
+
+---
+
+### Opção D: Controle Manual via Joystick (Controle de Videogame)
+
+Para controlar o robô usando um gamepad (como o GameSir T4 Lite / Xbox 360), siga o procedimento abaixo:
+
+1. **Instalar dependências no Ubuntu (WSL2 / Nativo):**
+   ```bash
+   sudo apt update
+   sudo apt install -y ros-humble-joy joystick
+   ```
+
+2. **Conectar e redirecionar o controle no WSL2:**
+   - No Windows, abra o PowerShell como Administrador.
+   - Encontre o BUSID do controle (reconhecido como *Controlador XBOX 360*):
+     ```powershell
+     usbipd list
+     ```
+   - Vincule e redirecione o dispositivo para o WSL2 (se apresentar o erro `Device busy`, feche a Steam e outros mapeadores de controles no Windows):
+     ```powershell
+     usbipd attach --wsl --busid <BUSID>
+     ```
+
+3. **Verificar e liberar permissões no Ubuntu:**
+   ```bash
+   # Certifica-se de que o controle foi detectado como dispositivo de input no Linux
+   ls -l /dev/input/js*
+   
+   # Concede permissão de leitura para o nó do ROS
+   sudo chmod 666 /dev/input/js0
+   ```
+
+4. **Executar a Teleoperação por Joystick:**
+   Abra um novo terminal no Ubuntu, carregue o ambiente do workspace e execute:
+   ```bash
+   ros2 launch my_robot_bringup joystick_teleop.launch.py
+   ```
+   *   **Como controlar:** Mantenha o botão **LB** (botão morto de segurança) pressionado e use o **analógico esquerdo** para se movimentar (frente/trás e curvas). Soltar o botão **LB** para o robô imediatamente.
+
