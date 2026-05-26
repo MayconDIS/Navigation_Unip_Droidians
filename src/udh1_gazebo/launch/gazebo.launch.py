@@ -14,10 +14,13 @@ def generate_launch_description():
     udh1_gazebo_dir      = get_package_share_directory('udh1_gazebo')
     gazebo_ros_dir       = get_package_share_directory('gazebo_ros')
 
+    # Encontrar a pasta 'mapas' na raiz do workspace de forma dinâmica
+    mapas_dir = os.path.abspath(os.path.join(udh1_gazebo_dir, '..', '..', '..', '..', 'src', 'Navigation_Unip_Droidians', 'mapas'))
+
     # ── Argumentos ──────────────────────────────────────────────────
     world_arg = DeclareLaunchArgument(
         'world',
-        default_value=os.path.join(udh1_gazebo_dir, 'worlds', 'udh1_world.world'),
+        default_value=os.path.join(mapas_dir, 'udh1_mapa.world'),
         description='Mundo Gazebo a carregar'
     )
     x_arg = DeclareLaunchArgument('x', default_value='0.0',  description='Posição X inicial')
