@@ -50,6 +50,7 @@ def main(args=None):
     
     linear_vel = 0.0
     angular_vel = 0.0
+    empty_key_count = 0
     
     try:
         print(msg)
@@ -57,6 +58,7 @@ def main(args=None):
             key = getKey(settings)
             
             if key != '':
+                empty_key_count = 0
                 if key == 'w' or key == 'W':
                     linear_vel = node.speed
                     angular_vel = 0.0
@@ -79,6 +81,15 @@ def main(args=None):
                     print(f"\rComando: PARAR (vel=0.0)                            ", end="")
                 elif key == '\x03':  # CTRL+C
                     break
+            else:
+                # Se não receber nenhuma tecla por 12 ciclos (0.60s), para o robô automaticamente
+                # Isso evita que o robô pare durante o delay de repetição do teclado ou na transição de teclas
+                empty_key_count += 1
+                if empty_key_count >= 12:
+                    if linear_vel != 0.0 or angular_vel != 0.0:
+                        linear_vel = 0.0
+                        angular_vel = 0.0
+                        print(f"\rComando: PARAR AUTOMÁTICO (soltou a tecla)           ", end="")
             
             twist = Twist()
             twist.linear.x = float(linear_vel)
