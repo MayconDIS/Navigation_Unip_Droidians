@@ -27,6 +27,8 @@ setup(
         'console_scripts': [
             'base_driver = serial_com_py.base_driver:main',
             'base_driver_pulse = serial_com_py.base_driver_pulse:main',
+            'base_driver_sim = serial_com_py.base_driver_sim:main',
+            'safe_stop = serial_com_py.safe_stop:main',
             'distance_watchdog = serial_com_py.distance_watchdog:main',
             'wasd_teleop = serial_com_py.wasd_teleop:main',
         ],
