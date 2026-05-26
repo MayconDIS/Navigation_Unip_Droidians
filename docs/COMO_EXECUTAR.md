@@ -15,9 +15,9 @@ cd ~/athome_ws/src/Navigation_Unip_Droidians
 # Atualize os metadados do repositório
 git fetch origin
 
-# Mude para a branch sintonizada
-git checkout feature/restauracao-base-otimizacao-nav2
-git pull origin feature/restauracao-base-otimizacao-nav2
+# Mude para a branch principal
+git checkout main
+git pull origin main
 ```
 
 ---
